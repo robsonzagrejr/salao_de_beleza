@@ -3,6 +3,8 @@
 ===Salao de Beleza ===
 ======================
 https://rachacuca.com.br/logica/problemas/salao-de-beleza/
+Author: Robson Zagre Júnior
+Data: 7/11/19
 */
 
 %Predicados
@@ -54,19 +56,19 @@ aEsquerda(X, Y, Lista) :- nth0(IndexX, Lista, X),
                           nth0(IndexY, Lista, Y),
                           IndexX < IndexY.
 
-noMeio(X, Lista) :- nth0(IndexX, Lista, X),
-                    length(Lista, Tamanho),
-                    IndexX =:= (Tamanho / 2).
+exatamenteAEsquerda(X, Y, Lista) :- nextto(X, Y, Lista).
 
 aDireita(X, Y, Lista) :- aEsquerda(Y, X, Lista).
 
-aoLado(X, Y, Lista) :- nextto(Y, X, Lista) ; nextto(X, Y, Lista).
+exatamenteADireita(X, Y, Lista) :- exatamenteAEsquerda(Y, X, Lista).
+
+aoLado(X, Y, Lista) :- nextto(X, Y, Lista); nextto(Y, X, Lista).
 
 primeiraPosicao(X, [X|_]).
 
 ultimaPosicao(X, Lista) :- last(Lista, X).
 
-naPonta(X, Lista) :- primeiraPosicao(X, Lista) ; ultimaPosicao(X, Lista).
+naPonta(X, Lista) :- primeiraPosicao(X, Lista); ultimaPosicao(X, Lista).
 
 todosDiferentes([]).
 todosDiferentes([H|T]) :- not(member(H, T)), todosDiferentes(T).
@@ -81,24 +83,24 @@ solucao(ListaSolucao) :-
     ],
 
     %A mulher que vai Tingir os cabelos está exatamente à esquerda da Cláudia.
-    aEsquerda(cadeira(_,_,_,_,_,tingir), cadeira(_,_,_,claudia,_,_), ListaSolucao),
+    exatamenteAEsquerda(cadeira(_,_,_,_,_,tingir), cadeira(_,_,_,claudia,_,_), ListaSolucao),
 
     %A moça que está no meio vai Alisar os cabelos.
-    noMeio(cadeira(_,_,_,_,_,alisar), ListaSolucao),
+    Fazer3 = alisar,
 
-    %Quem vai Cortar os cabelos está em algum lugar entre a Fluminense.
+    %Quem vai Cortar os cabelos está em algum lugar entre a Fluminense
     % e a que tem a bolsa Vermelha, que está à direita.
     aDireita(cadeira(_,_,_,_,_,cortar), cadeira(_,fluminense,_,_,_,_), ListaSolucao),
     aEsquerda(cadeira(_,_,_,_,_,cortar), cadeira(vermelha,_,_,_,_,_), ListaSolucao),
 
     %Quem vai fazer Maquiagem está na primeira cadeira.
-    primeiraPosicao(cadeira(_,_,_,_,_,maquiagem), ListaSolucao),
+    Fazer1 = maquiagem,
 
     %A Paulista está sentada exatamente à esquerda da Publicitária.
-    aEsquerda(cadeira(_,paulista,_,_,_,_),cadeira(_,_,_,_,publicitaria,_),ListaSolucao),
+    exatamenteAEsquerda(cadeira(_,paulista,_,_,_,_),cadeira(_,_,_,_,publicitaria,_),ListaSolucao),
 
     %A Mariana trabalha como Tradutora.
-    member(cadeira(mariana,_,_,_,tradutora,_), ListaSolucao),
+    member(cadeira(_,_,_,mariana,tradutora,_), ListaSolucao),
 
     %A Dentista está sentada na quarta cadeira.
     Profissao4 = dentista,
@@ -107,7 +109,7 @@ solucao(ListaSolucao) :-
     aoLado(cadeira(_,_,_,_,cozinheira,_), cadeira(_,mineira,_,_,_,_), ListaSolucao),
 
     %A Ana está exatamente à direita da mulher que veio fazer Maquiagem.
-    aDireita(cadeira(_,_,_,ana,_,_), cadeira(_,_,_,_,_,maquiagem), ListaSolucao),
+    exatamenteADireita(cadeira(_,_,_,ana,_,_), cadeira(_,_,_,_,_,maquiagem), ListaSolucao),
 
     %Tina está sentada em uma das pontas.
     naPonta(cadeira(_,_,_,tina,_,_), ListaSolucao),
@@ -126,7 +128,7 @@ solucao(ListaSolucao) :-
     aoLado(cadeira(verde,_,_,_,_,_), cadeira(_,_,maracuja,_,_,_), ListaSolucao),
 
     %A Mineira está sentada exatamente à direita da dona da bolsa Branca.
-    aDireita(cadeira(_,mineira,_,_,_,_), cadeira(branca,_,_,_,_,_),ListaSolucao),
+    exatamenteADireita(cadeira(_,mineira,_,_,_,_), cadeira(branca,_,_,_,_,_),ListaSolucao),
 
     %A Sul-rio-grandense adora suco de Morango.
     member(cadeira(_,gaucha,morango,_,_,_), ListaSolucao),
@@ -135,7 +137,7 @@ solucao(ListaSolucao) :-
     aoLado(cadeira(_,_,_,_,advogada,_), cadeira(_,_,_,_,_,cortar), ListaSolucao),
 
     %A dona da bolsa Amarela está sentada exatamente à esquerda da dona da bolsa Branca.
-    aEsquerda(cadeira(amarela,_,_,_,_,_), cadeira(branca,_,_,_,_,_), ListaSolucao),
+    exatamenteAEsquerda(cadeira(amarela,_,_,_,_,_), cadeira(branca,_,_,_,_,_), ListaSolucao),
 
     %Testa as Possibilidades
     bolsa(Bolsa1), bolsa(Bolsa2), bolsa(Bolsa3), bolsa(Bolsa4), bolsa(Bolsa5),
