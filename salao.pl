@@ -1,13 +1,18 @@
 /*
-======================
-===Salao de Beleza ===
-======================
+=======================
+=== Salao de Beleza ===
+=======================
 https://rachacuca.com.br/logica/problemas/salao-de-beleza/
 Author: Robson Zagre Júnior
 Data: 7/11/19
 */
 
-%Predicados
+/*
+==================
+=== Predicados ===
+==================
+*/
+
 
 %Bolsa
 bolsa(amarela).
@@ -51,27 +56,47 @@ fazer(maquiagem).
 fazer(manicure).
 fazer(tingir).
 
-%Regras Basicas
+/*
+==============
+=== Regras ===
+==============
+*/
+
+% X se encontra a esquerda de Y na Lista
 aEsquerda(X, Y, Lista) :- nth0(IndexX, Lista, X),
                           nth0(IndexY, Lista, Y),
                           IndexX < IndexY.
 
+% X e o item anterior a Y na Lista
 exatamenteAEsquerda(X, Y, Lista) :- nextto(X, Y, Lista).
 
+% X se encontra a direita de Y na Lista
 aDireita(X, Y, Lista) :- aEsquerda(Y, X, Lista).
 
+% X e o item posterior a Y na Lista
 exatamenteADireita(X, Y, Lista) :- exatamenteAEsquerda(Y, X, Lista).
 
+% X esta ao lado de Y na lista (Direita ou Esquerda)
 aoLado(X, Y, Lista) :- nextto(X, Y, Lista); nextto(Y, X, Lista).
 
+% X e o primeiro elemento da Lista
 primeiraPosicao(X, [X|_]).
 
+% X e o ultimo elemento da Lista
 ultimaPosicao(X, Lista) :- last(Lista, X).
 
+% X ou e o primeiro ou e o ultimo elemento da Lista
 naPonta(X, Lista) :- primeiraPosicao(X, Lista); ultimaPosicao(X, Lista).
 
+% Todos os elementos da lista sao diferentes
 todosDiferentes([]).
 todosDiferentes([H|T]) :- not(member(H, T)), todosDiferentes(T).
+
+/*
+===========================
+=== Solucao do problema ===
+===========================
+*/
 
 solucao(ListaSolucao) :-
     ListaSolucao = [
@@ -81,6 +106,15 @@ solucao(ListaSolucao) :-
         cadeira(Bolsa4, Gentilico4, Suco4, Nome4, Profissao4, Fazer4),
         cadeira(Bolsa5, Gentilico5, Suco5, Nome5, Profissao5, Fazer5)
     ],
+
+    /*
+    ============================
+    === Regras Exigidas para ===
+    ===     solucionar       ===
+    ===          o           ===
+    ===      problema        ===
+    ============================
+    */
 
     %A mulher que vai Tingir os cabelos está exatamente à esquerda da Cláudia.
     exatamenteAEsquerda(cadeira(_,_,_,_,_,tingir), cadeira(_,_,_,claudia,_,_), ListaSolucao),
@@ -139,21 +173,34 @@ solucao(ListaSolucao) :-
     %A dona da bolsa Amarela está sentada exatamente à esquerda da dona da bolsa Branca.
     exatamenteAEsquerda(cadeira(amarela,_,_,_,_,_), cadeira(branca,_,_,_,_,_), ListaSolucao),
 
-    %Testa as Possibilidades
+    /*
+    =========================
+    ===  Atribui Valores  ===
+    ===         e         ===
+    === Limita Repeticoes ===
+    =========================
+    */
+
+    %Bolsa
     bolsa(Bolsa1), bolsa(Bolsa2), bolsa(Bolsa3), bolsa(Bolsa4), bolsa(Bolsa5),
     todosDiferentes([Bolsa1, Bolsa2, Bolsa3, Bolsa4, Bolsa5]),
 
+    %Gentilico
     gentilico(Gentilico1), gentilico(Gentilico2), gentilico(Gentilico3), gentilico(Gentilico4), gentilico(Gentilico5),
     todosDiferentes([Gentilico1, Gentilico2, Gentilico3, Gentilico4, Gentilico5]),
 
+    %Suco
     suco(Suco1), suco(Suco2), suco(Suco3), suco(Suco4), suco(Suco5),
     todosDiferentes([Suco1, Suco2, Suco3, Suco4, Suco5]),
 
+    %Nome
     nome(Nome1), nome(Nome2), nome(Nome3), nome(Nome4), nome(Nome5),
     todosDiferentes([Nome1, Nome2, Nome3, Nome4, Nome5]),
 
+    %Profissao
     profissao(Profissao1), profissao(Profissao2), profissao(Profissao3), profissao(Profissao4), profissao(Profissao5),
     todosDiferentes([Profissao1, Profissao2, Profissao3, Profissao4, Profissao5]),
 
+    %Fazer
     fazer(Fazer1), fazer(Fazer2), fazer(Fazer3), fazer(Fazer4), fazer(Fazer5),
     todosDiferentes([Fazer1, Fazer2, Fazer3, Fazer4, Fazer5]).
